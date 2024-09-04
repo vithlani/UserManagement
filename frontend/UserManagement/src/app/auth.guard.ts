@@ -13,7 +13,7 @@ export class AuthGuard {
     const authService = inject(AuthService); // Inject AuthService
     const router = inject(Router); // Inject Router
 
-    const isAuthenticated = authService.isAuthenticated(); // Check authentication status
+    const isAuthenticated = localStorage.getItem('authToken') ? true : false; // Check authentication status
 
     if (!isAuthenticated) {
       router.navigate(['/login']); // Redirect to login if not authenticated

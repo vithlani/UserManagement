@@ -25,6 +25,7 @@ export class AuthService {
     if (token != null) {
       localStorage.setItem('authToken', token);
       this.loggedIn = true;
+      console.log('In set usertoken', this.loggedIn);
     }
   }
 

@@ -4,9 +4,13 @@ import {
   FormGroup,
   FormControl,
   FormBuilder,
+  AbstractControl,
+  ValidationErrors,
 } from '@angular/forms';
+import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';
 import { Router } from '@angular/router';
 import { ProfileUser } from 'src/app/models/userProfileModel';
+import { AlretService } from 'src/app/services/alret.service';
 import { FormValidationService } from 'src/app/services/form-validation.service';
 import { UserService } from 'src/app/services/user.service';
 
@@ -23,9 +27,30 @@ export class UserProfileComponent {
     private formBuilder: FormBuilder,
     private userService: UserService,
     private formValidationService: FormValidationService,
-    private router: Router
+    private alertService: AlretService
   ) {
-    this.userForm = this.formBuilder.group({});
+    this.userForm = this.formBuilder.group({
+      username: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(5),
+          Validators.maxLength(30),
+        ],
+      ],
+      email: [
+        '',
+        [
+          Validators.required,
+          Validators.email,
+          Validators.minLength(5),
+          Validators.maxLength(30),
+        ],
+      ],
+      firstName: ['', [Validators.minLength(5), Validators.maxLength(30)]],
+      lastName: ['', [Validators.minLength(5), Validators.maxLength(30)]],
+      dob: ['', [this.minAgeValidator(15)]],
+    });
   }
 
   ngOnInit() {
@@ -36,6 +61,7 @@ export class UserProfileComponent {
     this.userService.getUserProfile().subscribe({
       next: (response: any) => {
         this.profileData = response;
+        this.setFormControls();
         console.log('Response', response);
       },
       error: (error) => {
@@ -45,73 +71,30 @@ export class UserProfileComponent {
   }
 
   updateProfileDetails() {
+    this.profileData = this.userForm.value;
     this.userService.putUserProfile(this.profileData).subscribe({
       next: (response: any) => {
+        this.alertService.showSuccessMessage(
+          'User detail updated successfully!'
+        );
         console.log('Response', response);
       },
       error: (error) => {
+        this.alertService.showErrorMessage(error.message);
         console.log('In error', error);
       },
     });
   }
   setFormControls() {
     // Setting controls with initial values and validators
-    this.userForm.setControl(
-      'username',
-      new FormControl(
-        {
-          value: this.profileData?.userName || '',
-          disabled: this.profileData.userName ? true : false,
-        },
-        [Validators.required, Validators.minLength(5), Validators.maxLength(30)]
-      )
-    );
+    this.userForm.get('username')?.setValue(this.profileData?.username || '');
 
-    this.userForm.setControl(
-      'email',
-      new FormControl(
-        {
-          value: this.profileData?.email || '',
-          disabled: this.profileData.email ? true : false,
-        },
-        [
-          Validators.required,
-          Validators.email,
-          Validators.minLength(5),
-          Validators.maxLength(30),
-        ]
-      )
-    );
-    this.userForm.setControl(
-      'firstName',
-      new FormControl(
-        {
-          value: this.profileData?.firstName || '',
-          disabled: this.profileData.firstName ? true : false,
-        },
-        [Validators.minLength(5), Validators.maxLength(30)]
-      )
-    );
-    this.userForm.setControl(
-      'lastName',
-      new FormControl(
-        {
-          value: this.profileData?.lastName || '',
-          disabled: this.profileData.lastName ? true : false,
-        },
-        [Validators.minLength(5), Validators.maxLength(30)]
-      )
-    );
-    this.userForm.setControl(
-      'dob',
-      new FormControl(
-        {
-          value: this.profileData?.dateOfBirth || '',
-          disabled: this.profileData.dateOfBirth ? true : false,
-        },
-        []
-      )
-    );
+    this.userForm.get('email')?.setValue(this.profileData?.email || '');
+
+    this.userForm.get('firstName')?.setValue(this.profileData?.firstName || '');
+    this.userForm.get('lastName')?.setValue(this.profileData?.lastName || '');
+
+    this.userForm.get('dob')?.setValue(this.profileData?.dateOfBirth || '');
   }
 
   // FIELD ERROR
@@ -127,5 +110,22 @@ export class UserProfileComponent {
     if (this.userForm.valid) {
       this.updateProfileDetails();
     }
+  }
+
+  // Custom validator to check if the date of birth is at least 15 years ago
+  minAgeValidator(minAge: number) {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const dateOfBirth = control.value;
+      if (!dateOfBirth) return null;
+
+      const today = new Date();
+      const fifteenYearsAgo = new Date(
+        today.getFullYear() - minAge,
+        today.getMonth(),
+        today.getDate()
+      );
+
+      return dateOfBirth > fifteenYearsAgo ? { minAge: true } : null;
+    };
   }
 }

@@ -29,7 +29,9 @@
     </mat-form-field>
     <mat-form-field appearance="outline" class="d-block mb-2">
         <mat-label>Date Of Birth</mat-label>
-        <input formControlName="dob" matInput placeholder="Date of birth" />
+        <input matInput [matDatepicker]="dobPicker" formControlName="dob">
+        <mat-datepicker-toggle matSuffix [for]="dobPicker"></mat-datepicker-toggle>
+        <mat-datepicker #dobPicker></mat-datepicker>
         <mat-error *ngIf="fieldHasError('dob')">
             {{ getErrorMessage('dob') }}
         </mat-error>

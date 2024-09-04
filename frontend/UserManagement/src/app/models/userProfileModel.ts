@@ -1,5 +1,5 @@
 export interface User {
-  userName: string;
+  username: string;
   password: string;
 }
 export interface ProfileUser extends User {

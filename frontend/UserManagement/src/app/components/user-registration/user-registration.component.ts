@@ -8,8 +8,10 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { RegisterUser } from 'src/app/models/userProfileModel';
+import { AlretService } from 'src/app/services/alret.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { FormValidationService } from 'src/app/services/form-validation.service';
 import { UserService } from 'src/app/services/user.service';
@@ -59,10 +61,10 @@ export class UserRegistrationComponent {
   });
   constructor(
     private userService: UserService,
-    private authService: AuthService,
     private formValidationService: FormValidationService,
     private router: Router,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private alertService: AlretService
   ) {}
 
   // FIELD ERROR
@@ -96,10 +98,14 @@ export class UserRegistrationComponent {
         .registerUserProfile(this.userregistrationModel)
         .subscribe({
           next: (response: any) => {
-            this.router.navigate(['/login']);
+            this.alertService.showSuccessMessage(
+              'User registered successfully'
+            );
+            this.router.navigate(['']);
             console.log('Response', response);
           },
           error: (error) => {
+            this.alertService.showErrorMessage(error.message);
             console.log('In error', error);
           },
         });

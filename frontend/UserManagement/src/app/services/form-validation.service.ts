@@ -18,7 +18,9 @@ export class FormValidationService {
     return formField?.hasError('required')
       ? 'Reuired field'
       : // JSON SERVER ONLY APPLY EMAIL
-      formField?.hasError('minlength')
+      formField?.hasError('minAge')
+      ? 'User must be at least 15 years old'
+      : formField?.hasError('minlength')
       ? `Input should contain at least
         ${this.getLengthError(fieldErrors?.['minlength'])} characters`
       : formField?.hasError('maxlength')

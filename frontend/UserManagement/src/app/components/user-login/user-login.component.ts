@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { User } from 'src/app/models/userProfileModel';
+import { AlretService } from 'src/app/services/alret.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { FormValidationService } from 'src/app/services/form-validation.service';
 import { UserService } from 'src/app/services/user.service';
@@ -41,7 +42,8 @@ export class UserLoginComponent {
     private authService: AuthService,
     private router: Router,
     private formBuilder: FormBuilder,
-    private formValidationService: FormValidationService
+    private formValidationService: FormValidationService,
+    private alertService: AlretService
   ) {}
 
   ngOnInit() {}
@@ -64,11 +66,12 @@ export class UserLoginComponent {
       this.userLoginModel = this.loginForm.value;
       this.userService.loginuserProfile(this.userLoginModel).subscribe({
         next: (response: any) => {
+          this.alertService.showSuccessMessage('Login successfull!');
           this.authService.setUserToken(response.token);
           this.router.navigate(['/profile']);
-          console.log('Response', response);
         },
         error: (error) => {
+          this.alertService.showErrorMessage(error.message);
           console.log('In error', error);
         },
       });
