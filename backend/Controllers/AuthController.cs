@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using UserManagementSystem.DTOs;
+using UserManagementSystem.Models;
 using UserManagementSystem.Services;
 
 namespace UserManagementSystem.Controllers
@@ -21,8 +22,8 @@ namespace UserManagementSystem.Controllers
         {
             try
             {
-                await _userService.RegisterUserAsync(dto);
-                return Ok(new { message = "User registered successfully" });
+                User user = await _userService.RegisterUserAsync(dto);
+                return Ok(new { value = user, message = "User registered successfully" });
             }
             catch (Exception ex)
             {

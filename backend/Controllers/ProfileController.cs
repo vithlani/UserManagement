@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using UserManagementSystem.DTOs;
@@ -22,17 +21,34 @@ namespace UserManagementSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> GetProfile()
         {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            var profile = await _userService.GetUserProfileAsync(userId);
-            return Ok(profile);
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim != null && int.TryParse(userIdClaim.Value, out var userId))
+            {
+                var profile = await _userService.GetUserProfileAsync(userId);
+                return Ok(profile);
+            }
+            else
+            {
+                // Handle the case when the user ID is not a valid integer
+                return BadRequest("Invalid user ID format.");
+            }
+
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateProfile(UpdateUserProfileDto dto)
         {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            await _userService.UpdateUserProfileAsync(userId, dto);
-            return NoContent();
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim != null && int.TryParse(userIdClaim.Value, out var userId))
+            {
+                var updatedProfile = await _userService.UpdateUserProfileAsync(userId, dto);
+                return Ok(updatedProfile);
+            }
+            else
+            {
+                // Handle the case when the user ID is not a valid integer
+                return BadRequest("Invalid user ID format.");
+            }
         }
-    }
+    } 
 }
