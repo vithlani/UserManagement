@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3000',
-  registrationApiUrl: '',
-  loginApiUrl: '',
-  profileApiUrl: '',
+  apiUrl: 'https://localhost:7218',
+  registrationApiUrl: '/api/Auth/register',
+  loginApiUrl: '/api/Auth/login',
+  profileApiUrl: '/api/Profile',
 };

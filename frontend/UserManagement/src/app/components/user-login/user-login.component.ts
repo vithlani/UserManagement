@@ -60,6 +60,8 @@ export class UserLoginComponent {
 
   login() {
     if (this.loginForm.valid) {
+      console.log('Login Form value', this.loginForm.value);
+      this.userLoginModel = this.loginForm.value;
       this.userService.loginuserProfile(this.userLoginModel).subscribe({
         next: (response: any) => {
           this.authService.setUserToken(response.token);

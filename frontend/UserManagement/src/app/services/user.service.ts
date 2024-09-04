@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { CommonService } from './common.service';
 import { ProfileUser, RegisterUser, User } from '../models/userProfileModel';
 import { Observable } from 'rxjs';
-import { environment } from '../environments/environment.prod';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root',

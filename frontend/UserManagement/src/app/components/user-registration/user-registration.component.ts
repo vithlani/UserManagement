@@ -28,7 +28,6 @@ export class UserRegistrationComponent {
   registerForm: FormGroup = this.formBuilder.group({
     username: new FormControl('', [
       Validators.required,
-      Validators.email,
       Validators.minLength(5),
       Validators.maxLength(30),
     ]),
@@ -92,6 +91,7 @@ export class UserRegistrationComponent {
 
   registerUser() {
     if (this.registerForm?.valid) {
+      this.userregistrationModel = this.registerForm.value;
       this.userService
         .registerUserProfile(this.userregistrationModel)
         .subscribe({

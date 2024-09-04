@@ -1,1 +1,40 @@
-<p>user-profile works!</p>
+<form [formGroup]="userForm">
+    <mat-form-field appearance="outline" class="d-block mb-2">
+        <mat-label>Username</mat-label>
+        <input formControlName="username" matInput placeholder="Username" />
+        <mat-error *ngIf="fieldHasError('username')">
+            {{ getErrorMessage('username') }}
+        </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="d-block mb-2">
+        <mat-label>Email</mat-label>
+        <input formControlName="email" matInput placeholder="Email" />
+        <mat-error *ngIf="fieldHasError('email')">
+            {{ getErrorMessage('email') }}
+        </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="d-block mb-2">
+        <mat-label>First Name</mat-label>
+        <input formControlName="firstName" matInput placeholder="First Name" />
+        <mat-error *ngIf="fieldHasError('firstName')">
+            {{ getErrorMessage('firstName') }}
+        </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="d-block mb-2">
+        <mat-label>Last Name</mat-label>
+        <input formControlName="lastName" matInput placeholder="Last Name" />
+        <mat-error *ngIf="fieldHasError('lastName')">
+            {{ getErrorMessage('lastName') }}
+        </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="d-block mb-2">
+        <mat-label>Date Of Birth</mat-label>
+        <input formControlName="dob" matInput placeholder="Date of birth" />
+        <mat-error *ngIf="fieldHasError('dob')">
+            {{ getErrorMessage('dob') }}
+        </mat-error>
+    </mat-form-field>
+    <button [disabled]="userForm.invalid" mat-button type="button" color="primary" (click)="save()">
+        Update
+    </button>
+</form>
